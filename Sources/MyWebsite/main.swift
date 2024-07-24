@@ -22,4 +22,4 @@ struct ThunderingDragon: Website {
 }
 
 // This will generate your website using the built-in Foundation theme:
-try ThunderingDragon().publish(withTheme: .foundation, deployedUsing: .gitHub("thead9-thunder/thead9-thunder.github.io"))
+try ThunderingDragon().publish(withTheme: .dragon)
