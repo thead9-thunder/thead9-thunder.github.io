@@ -1,17 +1,23 @@
-// swift-tools-version: 5.9
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+// swift-tools-version:5.5
 
 import PackageDescription
 
 let package = Package(
-    name: "IgniteStarter",
-    platforms: [.macOS(.v13)],
+    name: "MyWebsite",
+    platforms: [.macOS(.v12)],
+    products: [
+        .executable(
+            name: "MyWebsite",
+            targets: ["MyWebsite"]
+        )
+    ],
     dependencies: [
-        .package(url: "https://github.com/twostraws/Ignite.git", branch: "main")
+        .package(name: "Publish", url: "https://github.com/johnsundell/publish.git", from: "0.8.0")
     ],
     targets: [
         .executableTarget(
-            name: "IgniteStarter",
-            dependencies: ["Ignite"]),
+            name: "MyWebsite",
+            dependencies: ["Publish"]
+        )
     ]
 )
