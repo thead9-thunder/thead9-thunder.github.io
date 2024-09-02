@@ -6,7 +6,7 @@ import Plot
 struct ThunderingDragon: Website {
     enum SectionID: String, WebsiteSectionID {
         // Add the sections that you want your website to contain here:
-        case posts
+        case recheck
     }
 
     struct ItemMetadata: WebsiteItemMetadata {
@@ -16,7 +16,7 @@ struct ThunderingDragon: Website {
     // Update these properties to configure your website:
     var url = URL(string: "https://thunderingdragon.com")!
     var name = "Thundering Dragon"
-    var description = "Developing for Apple Platforms"
+    var description = "Developing apps for Apple Platforms from Orlando, FL"
     var language: Language { .english }
     var imagePath: Path? { nil }
 }

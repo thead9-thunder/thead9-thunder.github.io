@@ -29,8 +29,15 @@ private struct DragonHTMLFactory<Site: Website>: HTMLFactory {
         SiteHeader(context: context, selectedSelectionID: nil)
         Wrapper {
           H1(index.title)
-          Paragraph(context.site.description)
-            .class("description")
+          
+          List(Site.SectionID.allCases) { sectionID in
+            let section = context.sections[sectionID]
+            
+            return H2(Link(section.title == "Recheck" ? "Check & Recheck" : section.title,
+                        url: section.path.absoluteString
+            ))
+          }
+          .style("list-style-type: none;")
         }
         SiteFooter()
       }
@@ -45,7 +52,7 @@ private struct DragonHTMLFactory<Site: Website>: HTMLFactory {
       .body {
         SiteHeader(context: context, selectedSelectionID: section.id)
         Wrapper {
-          H1(section.title)
+          H1(section.title == "Recheck" ? "Check & Recheck" : section.title)
           ItemList(items: section.items, site: context.site)
         }
         SiteFooter()
