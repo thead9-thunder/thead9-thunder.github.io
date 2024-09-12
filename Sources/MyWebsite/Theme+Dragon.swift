@@ -72,8 +72,8 @@ private struct DragonHTMLFactory<Site: Website>: HTMLFactory {
           Wrapper {
             Article {
               Div(item.content.body).class("content")
-              Span("Tagged with: ")
-              ItemTagList(item: item, site: context.site)
+//              Span("Tagged with: ")
+//              ItemTagList(item: item, site: context.site)
             }
           }
           SiteFooter()
