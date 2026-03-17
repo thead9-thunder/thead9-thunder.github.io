@@ -8,7 +8,7 @@ struct ThunderingDragon: Website {
         // Add the sections that you want your website to contain here:
         case recheck
         case cheers
-        case ghostLight
+        case ghost_light
     }
 
     struct ItemMetadata: WebsiteItemMetadata {

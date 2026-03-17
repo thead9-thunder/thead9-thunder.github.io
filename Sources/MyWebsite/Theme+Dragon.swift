@@ -9,223 +9,233 @@ import Publish
 import Plot
 
 public extension Theme {
-  /// The default "Foundation" theme that Publish ships with, a very
-  /// basic theme mostly implemented for demonstration purposes.
-  static var dragon: Self {
-    Theme(
-      htmlFactory: DragonHTMLFactory(),
-      resourcePaths: ["Resources/DragonTheme/styles.css"]
-    )
-  }
+    /// The default "Foundation" theme that Publish ships with, a very
+    /// basic theme mostly implemented for demonstration purposes.
+    static var dragon: Self {
+        Theme(
+            htmlFactory: DragonHTMLFactory(),
+            resourcePaths: ["Resources/DragonTheme/styles.css"]
+        )
+    }
 }
 
 private struct DragonHTMLFactory<Site: Website>: HTMLFactory {
-  func makeIndexHTML(for index: Index,
-                     context: PublishingContext<Site>) throws -> HTML {
-    HTML(
-      .lang(context.site.language),
-      .head(for: index, on: context.site),
-      .body {
-        SiteHeader(context: context, selectedSelectionID: nil)
-        Wrapper {
-          H1(index.title)
-          
-          List(Site.SectionID.allCases) { sectionID in
-            let section = context.sections[sectionID]
-            
-            return H2(Link(section.title == "Recheck" ? "Check & Recheck" : section.title,
-                        url: section.path.absoluteString
-            ))
-          }
-          .style("list-style-type: none;")
-        }
-        SiteFooter()
-      }
-    )
-  }
-  
-  func makeSectionHTML(for section: Section<Site>,
+    func makeIndexHTML(for index: Index,
                        context: PublishingContext<Site>) throws -> HTML {
-    HTML(
-      .lang(context.site.language),
-      .head(for: section, on: context.site),
-      .body {
-        SiteHeader(context: context, selectedSelectionID: section.id)
-        Wrapper {
-          H1(section.title == "Recheck" ? "Check & Recheck" : section.title)
-          ItemList(items: section.items, site: context.site)
-        }
-        SiteFooter()
-      }
-    )
-  }
-  
-  func makeItemHTML(for item: Item<Site>,
-                    context: PublishingContext<Site>) throws -> HTML {
-    HTML(
-      .lang(context.site.language),
-      .head(for: item, on: context.site),
-      .body(
-        .class("item-page"),
-        .components {
-          SiteHeader(context: context, selectedSelectionID: item.sectionID)
-          Wrapper {
-            Article {
-              Div(item.content.body).class("content")
-//              Span("Tagged with: ")
-//              ItemTagList(item: item, site: context.site)
+        HTML(
+            .lang(context.site.language),
+            .head(for: index, on: context.site),
+            .body {
+                SiteHeader(context: context, selectedSelectionID: nil)
+                Wrapper {
+                    H1(index.title)
+                    
+                    List(Site.SectionID.allCases) { sectionID in
+                        let section = context.sections[sectionID]
+                        
+                        if section.title == "Recheck" {
+                            return H2(Link("Check & Recheck", url: section.path.absoluteString))
+                        } else if section.title == "Ghost_Light" {
+                            return H2(Link("Ghost Light", url: section.path.absoluteString))
+                        } else {
+                            return H2(Link(section.title, url: section.path.absoluteString))
+                        }
+                    }
+                    .style("list-style-type: none;")
+                }
+                SiteFooter()
             }
-          }
-          SiteFooter()
-        }
-      )
-    )
-  }
-  
-  func makePageHTML(for page: Page,
-                    context: PublishingContext<Site>) throws -> HTML {
-    HTML(
-      .lang(context.site.language),
-      .head(for: page, on: context.site),
-      .body {
-        SiteHeader(context: context, selectedSelectionID: nil)
-        Wrapper(page.body)
-        SiteFooter()
-      }
-    )
-  }
-  
-  func makeTagListHTML(for page: TagListPage,
-                       context: PublishingContext<Site>) throws -> HTML? {
-    HTML(
-      .lang(context.site.language),
-      .head(for: page, on: context.site),
-      .body {
-        SiteHeader(context: context, selectedSelectionID: nil)
-        Wrapper {
-          H1("Browse all tags")
-          List(page.tags.sorted()) { tag in
-            ListItem {
-              Link(tag.string,
-                   url: context.site.path(for: tag).absoluteString
-              )
+        )
+    }
+    
+    func makeSectionHTML(for section: Section<Site>,
+                         context: PublishingContext<Site>) throws -> HTML {
+        HTML(
+            .lang(context.site.language),
+            .head(for: section, on: context.site),
+            .body {
+                SiteHeader(context: context, selectedSelectionID: section.id)
+                Wrapper {
+                    if section.title == "Recheck" {
+                        H1(Link("Check & Recheck", url: section.path.absoluteString))
+                    } else if section.title == "Ghost_Light" {
+                        H1(Link("Ghost Light", url: section.path.absoluteString))
+                    } else {
+                        H1(Link(section.title, url: section.path.absoluteString))
+                    }                    
+                    ItemList(items: section.items, site: context.site)
+                }
+                SiteFooter()
             }
-            .class("tag")
-          }
-          .class("all-tags")
-        }
-        SiteFooter()
-      }
-    )
-  }
-  
-  func makeTagDetailsHTML(for page: TagDetailsPage,
-                          context: PublishingContext<Site>) throws -> HTML? {
-    HTML(
-      .lang(context.site.language),
-      .head(for: page, on: context.site),
-      .body {
-        SiteHeader(context: context, selectedSelectionID: nil)
-        Wrapper {
-          H1 {
-            Text("Tagged with ")
-            Span(page.tag.string).class("tag")
-          }
-          
-          Link("Browse all tags",
-               url: context.site.tagListPath.absoluteString
-          )
-          .class("browse-all")
-          
-          ItemList(
-            items: context.items(
-              taggedWith: page.tag,
-              sortedBy: \.date,
-              order: .descending
-            ),
-            site: context.site
-          )
-        }
-        SiteFooter()
-      }
-    )
-  }
+        )
+    }
+    
+    func makeItemHTML(for item: Item<Site>,
+                      context: PublishingContext<Site>) throws -> HTML {
+        HTML(
+            .lang(context.site.language),
+            .head(for: item, on: context.site),
+            .body(
+                .class("item-page"),
+                .components {
+                    SiteHeader(context: context, selectedSelectionID: item.sectionID)
+                    Wrapper {
+                        Article {
+                            Div(item.content.body).class("content")
+                            //              Span("Tagged with: ")
+                            //              ItemTagList(item: item, site: context.site)
+                        }
+                    }
+                    SiteFooter()
+                }
+            )
+        )
+    }
+    
+    func makePageHTML(for page: Page,
+                      context: PublishingContext<Site>) throws -> HTML {
+        HTML(
+            .lang(context.site.language),
+            .head(for: page, on: context.site),
+            .body {
+                SiteHeader(context: context, selectedSelectionID: nil)
+                Wrapper(page.body)
+                SiteFooter()
+            }
+        )
+    }
+    
+    func makeTagListHTML(for page: TagListPage,
+                         context: PublishingContext<Site>) throws -> HTML? {
+        HTML(
+            .lang(context.site.language),
+            .head(for: page, on: context.site),
+            .body {
+                SiteHeader(context: context, selectedSelectionID: nil)
+                Wrapper {
+                    H1("Browse all tags")
+                    List(page.tags.sorted()) { tag in
+                        ListItem {
+                            Link(tag.string,
+                                 url: context.site.path(for: tag).absoluteString
+                            )
+                        }
+                        .class("tag")
+                    }
+                    .class("all-tags")
+                }
+                SiteFooter()
+            }
+        )
+    }
+    
+    func makeTagDetailsHTML(for page: TagDetailsPage,
+                            context: PublishingContext<Site>) throws -> HTML? {
+        HTML(
+            .lang(context.site.language),
+            .head(for: page, on: context.site),
+            .body {
+                SiteHeader(context: context, selectedSelectionID: nil)
+                Wrapper {
+                    H1 {
+                        Text("Tagged with ")
+                        Span(page.tag.string).class("tag")
+                    }
+                    
+                    Link("Browse all tags",
+                         url: context.site.tagListPath.absoluteString
+                    )
+                    .class("browse-all")
+                    
+                    ItemList(
+                        items: context.items(
+                            taggedWith: page.tag,
+                            sortedBy: \.date,
+                            order: .descending
+                        ),
+                        site: context.site
+                    )
+                }
+                SiteFooter()
+            }
+        )
+    }
 }
 
 private struct Wrapper: ComponentContainer {
-  @ComponentBuilder var content: ContentProvider
-  
-  var body: Component {
-    Div(content: content).class("wrapper")
-  }
+    @ComponentBuilder var content: ContentProvider
+    
+    var body: Component {
+        Div(content: content).class("wrapper")
+    }
 }
 
 private struct SiteHeader<Site: Website>: Component {
-  var context: PublishingContext<Site>
-  var selectedSelectionID: Site.SectionID?
-  
-  var body: Component {
-    Header {
-      Wrapper {
-        Link(context.site.name, url: "/")
-          .class("site-name")
-        
-        if Site.SectionID.allCases.count > 1 {
-          navigation
+    var context: PublishingContext<Site>
+    var selectedSelectionID: Site.SectionID?
+    
+    var body: Component {
+        Header {
+            Wrapper {
+                Link(context.site.name, url: "/")
+                    .class("site-name")
+                
+                if Site.SectionID.allCases.count > 1 {
+                    navigation
+                }
+            }
         }
-      }
     }
-  }
-  
-  private var navigation: Component {
-    Navigation {
-      List(Site.SectionID.allCases) { sectionID in
-        let section = context.sections[sectionID]
-        
-        return Link(section.title,
-                    url: section.path.absoluteString
-        )
-        .class(sectionID == selectedSelectionID ? "selected" : "")
-      }
+    
+    private var navigation: Component {
+        Navigation {
+            List(Site.SectionID.allCases) { sectionID in
+                let section = context.sections[sectionID]
+                
+                return Link(section.title,
+                            url: section.path.absoluteString
+                )
+                .class(sectionID == selectedSelectionID ? "selected" : "")
+            }
+        }
     }
-  }
 }
 
 private struct ItemList<Site: Website>: Component {
-  var items: [Item<Site>]
-  var site: Site
-  
-  var body: Component {
-    List(items) { item in
-      Article {
-        H1(Link(item.title, url: item.path.absoluteString))
-        ItemTagList(item: item, site: site)
-        Paragraph(item.description)
-      }
+    var items: [Item<Site>]
+    var site: Site
+    
+    var body: Component {
+        List(items) { item in
+            Article {
+                H1(Link(item.title, url: item.path.absoluteString))
+                ItemTagList(item: item, site: site)
+                Paragraph(item.description)
+            }
+        }
+        .class("item-list")
     }
-    .class("item-list")
-  }
 }
 
 private struct ItemTagList<Site: Website>: Component {
-  var item: Item<Site>
-  var site: Site
-  
-  var body: Component {
-    List(item.tags) { tag in
-      Link(tag.string, url: site.path(for: tag).absoluteString)
+    var item: Item<Site>
+    var site: Site
+    
+    var body: Component {
+        List(item.tags) { tag in
+            Link(tag.string, url: site.path(for: tag).absoluteString)
+        }
+        .class("tag-list")
     }
-    .class("tag-list")
-  }
 }
 
 private struct SiteFooter: Component {
-  var body: Component {
-    Footer {
-      Paragraph {
-        Text("Generated using ")
-        Link("Publish", url: "https://github.com/johnsundell/publish")
-      }
+    var body: Component {
+        Footer {
+            Paragraph {
+                Text("Generated using ")
+                Link("Publish", url: "https://github.com/johnsundell/publish")
+            }
+        }
     }
-  }
 }
