@@ -35,7 +35,7 @@ private struct DragonHTMLFactory<Site: Website>: HTMLFactory {
                         
                         if section.title == "Recheck" {
                             return H2(Link("Check & Recheck", url: section.path.absoluteString))
-                        } else if section.title == "Ghost_Light" {
+                        } else if section.title == "Ghostlight" {
                             return H2(Link("Ghost Light", url: section.path.absoluteString))
                         } else {
                             return H2(Link(section.title, url: section.path.absoluteString))
@@ -58,11 +58,11 @@ private struct DragonHTMLFactory<Site: Website>: HTMLFactory {
                 Wrapper {
                     if section.title == "Recheck" {
                         H1(Link("Check & Recheck", url: section.path.absoluteString))
-                    } else if section.title == "Ghost_Light" {
+                    } else if section.title == "Ghostlight" {
                         H1(Link("Ghost Light", url: section.path.absoluteString))
                     } else {
                         H1(Link(section.title, url: section.path.absoluteString))
-                    }                    
+                    }
                     ItemList(items: section.items, site: context.site)
                 }
                 SiteFooter()
@@ -192,10 +192,16 @@ private struct SiteHeader<Site: Website>: Component {
             List(Site.SectionID.allCases) { sectionID in
                 let section = context.sections[sectionID]
                 
-                return Link(section.title,
-                            url: section.path.absoluteString
-                )
-                .class(sectionID == selectedSelectionID ? "selected" : "")
+                if section.title == "Recheck" {
+                    return Link("Check & Recheck", url: section.path.absoluteString)
+                        .class(sectionID == selectedSelectionID ? "selected" : "")
+                } else if section.title == "Ghostlight" {
+                    return Link("Ghost Light", url: section.path.absoluteString)
+                        .class(sectionID == selectedSelectionID ? "selected" : "")
+                } else {
+                    return Link(section.title, url: section.path.absoluteString)
+                        .class(sectionID == selectedSelectionID ? "selected" : "")
+                }
             }
         }
     }
